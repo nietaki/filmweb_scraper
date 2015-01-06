@@ -62,7 +62,7 @@ object Filmweb {
 
     val writer = CSVWriter.open(getCurrentFilename(), append = true)
 
-    (451 to lastPageNo).foreach {pageNo =>
+    (2252 to lastPageNo).foreach {pageNo =>
       println()
       println(pageNo)
       println()

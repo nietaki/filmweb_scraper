@@ -24,7 +24,7 @@ object Filmweb {
         val rating = filmDiv.select("span.rateBox").first().select("strong").first().ownText().digits
         val voteCount = filmDiv.select("div.box").first().ownText().digits
 
-        Film(title, origTitle, year.toInt, rating.toInt, voteCount.toInt)
+        Film(title, origTitle, tryParseToInt(year), tryParseToInt(rating), tryParseToInt(voteCount))
       }
     } catch {
       case _: HttpStatusException => Thread.sleep(1000); scrapeUrl(url);
@@ -32,7 +32,15 @@ object Filmweb {
     }
   }
 
-  val lastPageNo = 24335
+  def tryParseToInt(s: String): Int= {
+    try {
+      s.toInt
+    } catch {
+      case _: Exception => -1
+    }
+  }
+
+  val lastPageNo = 5000
 
   /**
    * returns pages sorted descending, by vote count (for now
@@ -40,7 +48,7 @@ object Filmweb {
    * @return the constructed url
    */
   def constructUrl(pageNo: Int): String = {
-    s"http://www.filmweb.pl/search/film?q=&type=&startYear=&endYear=&countryIds=&genreIds=&startRate=&endRate=&startCount=100&endCount=&sort=COUNT&sortAscending=false&c=portal&page=$pageNo"
+    s"http://www.filmweb.pl/search/film?q=&type=&startYear=&endYear=&countryIds=&genreIds=&startRate=&endRate=&startCount=&endCount=&sort=COUNT&sortAscending=false&c=portal&page=$pageNo"
   }
 
   def getCurrentFilename(): String = {
@@ -54,7 +62,10 @@ object Filmweb {
 
     val writer = CSVWriter.open(getCurrentFilename(), append = true)
 
-    (1 to 10).foreach {pageNo =>
+    (451 to lastPageNo).foreach {pageNo =>
+      println()
+      println(pageNo)
+      println()
       val url = constructUrl(pageNo)
       val films = scrapeUrl(url)
       films.foreach(println(_))

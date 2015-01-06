@@ -3,5 +3,6 @@
  */
 object Runner {
   def main(args: Array[String]) = {
+    Filmweb.run()
   }
 }

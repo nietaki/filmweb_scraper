@@ -12,19 +12,21 @@ import Implicits._
 object Filmweb {
 
   @tailrec
-  def scrapeUrl(url: String): Seq[Film] = {
+  def scrapeUrl(url: String): Seq[FilmwebFilm] = {
     try {
       val doc: Document = Jsoup.connect(url).get();
       val filmDivs = doc.select("div.filmContent").toList
       filmDivs.map { filmDiv =>
         //println(filmDiv)
-        val title = filmDiv.select("a.filmTitle").first().text().trim()
+        val titleLink = filmDiv.select("a.filmTitle").first()
+        val titleUrl = titleLink.absUrl("href")
+        val title = titleLink.text().trim()
         val origTitle = filmDiv.select("span.filmSubtitle").first().ownText().trim()
         val year = filmDiv.select("span.titleYear").first().text().digits
         val rating = filmDiv.select("span.rateBox").first().select("strong").first().ownText().digits
         val voteCount = filmDiv.select("div.box").first().ownText().digits
 
-        Film(title, origTitle, tryParseToInt(year), tryParseToInt(rating), tryParseToInt(voteCount))
+        FilmwebFilm(title, origTitle, titleUrl, tryParseToInt(year), tryParseToInt(rating), tryParseToInt(voteCount))
       }
     } catch {
       case _: HttpStatusException => Thread.sleep(1000); scrapeUrl(url);
@@ -62,7 +64,7 @@ object Filmweb {
 
     val writer = CSVWriter.open(getCurrentFilename(), append = true)
 
-    (2252 to lastPageNo).foreach {pageNo =>
+    (1 to lastPageNo).foreach {pageNo =>
       println()
       println(pageNo)
       println()

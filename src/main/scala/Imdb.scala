@@ -1,3 +1,5 @@
+import scala.io.Source
+
 object Imdb {
 
   def isTvSeriesEpisode(line: String): Boolean = {
@@ -19,7 +21,6 @@ object Imdb {
                                                   "distribution", "voteCount", "rating", "title", "year")
 
   def parseFilm(line: String): Option[ImdbFilm] = {
-
     def parseFilmInner(line: String): Option[ImdbFilm] = {
       import Implicits._
       val matches = ratingRegex.findFirstMatchIn(line)
@@ -35,5 +36,18 @@ object Imdb {
     parseFilmInner(cleaned)
   }
 
+  def getFileLines(filename: String): Iterator[String] = Source.fromFile(filename).getLines()
+
+  def stripBullshit(lines: Iterator[String]): Iterator[String] = {
+    lines.filterNot(isTvSeriesEpisode _).filterNot(isVideoGame _)
+  }
+
+  def parseRatings(filename: String): Iterator[ImdbFilm] = {
+    val optionIt = getFileLines(filename).map{ line =>
+      parseFilm(line)
+    }
+
+    optionIt.filterNot(o => o.isEmpty).map(_.get)
+  }
 
 }

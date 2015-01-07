@@ -18,8 +18,15 @@ class ImdbSpec extends Specification {
       film.voteCount must be equalTo(23)
       film.rating must be equalTo(74)
       film.title must be equalTo("Cities on Speed: Mumbai Disconnected")
-      film.year must be equalTo(2009)
+      film.year must be equalTo(2009) //
     }
+
+    "parse line with noise" in {
+      val line = "      ....1....8       6   9.2  #SaveBCFilm PSA (2013) (TV)"
+      Imdb.parseFilm(line).get.year must be equalTo(2013)
+    }
+
+
   }
 
 }

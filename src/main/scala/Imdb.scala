@@ -1,4 +1,4 @@
-import scala.io.Source
+import scala.io.{Codec, Source}
 
 object Imdb {
 
@@ -9,6 +9,8 @@ object Imdb {
   def isVideoGame(line: String): Boolean = {
     line.contains("(VG)")
   }
+
+  def isUnknownYear(line: String): Boolean = line.contains("(????)")
 
   def stripNoise(line: String): String = {
     line.replace(" (TV)", "")
@@ -36,14 +38,14 @@ object Imdb {
     parseFilmInner(cleaned)
   }
 
-  def getFileLines(filename: String): Iterator[String] = Source.fromFile(filename).getLines()
+  def getFileLines(filename: String): Iterator[String] = Source.fromFile(filename)(Codec.ISO8859).getLines()
 
   def stripBullshit(lines: Iterator[String]): Iterator[String] = {
-    lines.filterNot(isTvSeriesEpisode _).filterNot(isVideoGame _)
+    lines.filterNot(isTvSeriesEpisode _).filterNot(isVideoGame _).filterNot(isUnknownYear(_))
   }
 
   def parseRatings(filename: String): Iterator[ImdbFilm] = {
-    val optionIt = getFileLines(filename).map{ line =>
+    val optionIt = stripBullshit(getFileLines(filename)).map{ line =>
       parseFilm(line)
     }
 

@@ -1,4 +1,4 @@
-filmweb_id,title,title_original,filmweb_url,year,rating,vote_count,
+filmweb_id,title,title_original,filmweb_url,year,rating,vote_count,imdb_id,vote_distribution,vote_count,rating,title,year
 0,Zielona mila,The Green Mile,http://www.filmweb.pl/Zielona.Mila,1999,87,663216,273799,0000001232,587361,85,The Green Mile,1999
 1,Forrest Gump,,http://www.filmweb.pl/Forrest.Gump,1994,86,643012,97502,0000000133,942994,88,Forrest Gump,1994
 2,Matrix,The Matrix,http://www.filmweb.pl/Matrix,1999,76,592050,280697,0000000223,961023,87,The Matrix,1999

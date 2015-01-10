@@ -45,7 +45,7 @@ object Matcher {
     writer.writeAll(matches.map{ _.productIterator.toSeq})
   }
 
-  def getMatches(): Seq[(FilmwebFilm, ImdbFilm)] = {
+  lazy val matches: Seq[(FilmwebFilm, ImdbFilm)] = {
     val reader = CSVReader.open("res/matches.csv")
     val lines = reader.iterator.map{ seq => seq.map {_.toInt}}
     val films = lines.map{ line =>

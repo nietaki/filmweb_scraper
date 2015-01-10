@@ -11,6 +11,7 @@ object Runner {
     //Imdb.parseRatingsWithIds("res/imdb/ratings.list").foreach(println(_))
 
     //Matcher.saveMatches()
-    Matcher.getMatches().foreach(println(_))
+    //Matcher.matches.foreach(println(_))
+    //Analysis.saveToDatFile(Analysis.getHeatMapData, "heatmap")
   }
 }

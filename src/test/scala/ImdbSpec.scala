@@ -25,8 +25,18 @@ class ImdbSpec extends Specification {
       val line = "      ....1....8       6   9.2  #SaveBCFilm PSA (2013) (TV)"
       Imdb.parseFilm(line).get.year must be equalTo(2013)
     }
+  }
 
+  "ImdbFilm" should {
+    "give row without Option in id when id is set" in {
+      val film = ImdbFilm(Some(13), "dldkfalk", 324, 74, "some title", 2013)
+      film.row.head must be equalTo(13)
+    }
 
+    "give row with id set to -1 when id is None" in {
+      val film = ImdbFilm(None, "dldkfalk", 324, 74, "some title", 2013)
+      film.row.head must be equalTo(-1)
+    }
   }
 
 }

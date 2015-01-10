@@ -6,7 +6,8 @@ object Runner {
     //Filmweb.run()
 
     //Imdb.parseRatings("res/imdb/ratings.list").foreach(println(_))
-    println(Imdb.parseRatings("res/imdb/ratings.list").toList.length)
+    //println(Imdb.parseRatings("res/imdb/ratings.list").toList.length)
     //Imdb.getFileLines("res/imdb/ratings.list").foreach(println(_))
+    Imdb.parseRatingsWithIds("res/imdb/ratings.list").foreach(println(_))
   }
 }

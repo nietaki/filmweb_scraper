@@ -30,7 +30,7 @@ object Imdb {
         val voteCount = m.group("voteCount").toInt
         val rating = m.group("rating").digits.toInt
         val year = m.group("year").digits.toInt
-        ImdbFilm(m.group("distribution"), voteCount, rating, m.group("title"), year)
+        ImdbFilm(None, m.group("distribution"), voteCount, rating, m.group("title"), year)
       }
     }
 
@@ -50,6 +50,11 @@ object Imdb {
     }
 
     optionIt.filterNot(o => o.isEmpty).map(_.get)
+  }
+
+  def parseRatingsWithIds(filename: String): Iterator[ImdbFilm] = {
+    val filmsWithoutIds = parseRatings(filename)
+    filmsWithoutIds.zipWithIndex.map{case (f, idx) => f.copy(idOption = Some(idx))}
   }
 
 }

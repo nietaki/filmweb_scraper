@@ -13,8 +13,8 @@ object Analysis {
    * @param data sequence of rows containing data
    * @param filename filename to be saved to
    */
-  def saveToDatFile(data: Seq[Seq[Any]], filename: String): Unit = {
-    val writer = CSVWriter.open(s"data/$filename.dat")(spaceFormat)
+  def saveToCsv(data: Seq[Seq[Any]], filename: String): Unit = {
+    val writer = CSVWriter.open(s"data/$filename.csv")
     writer.writeAll(data)
   }
 

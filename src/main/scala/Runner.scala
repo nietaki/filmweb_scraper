@@ -13,5 +13,12 @@ object Runner {
     //Matcher.saveMatches()
     //Matcher.matches.foreach(println(_))
     //Analysis.saveToDatFile(Analysis.getHeatMapData, "heatmap")
+
+    Analysis.saveToCsv(Matcher.imdbFilms.map(_.row), "imdbFilms")
+    Analysis.saveToCsv(Matcher.filmwebFilms.map(_.row), "filmwebFilms")
+
+    Analysis.saveToCsv(Matcher.matches.map{case (filmweb, imdb) =>
+      filmweb.row ++ imdb.row
+    }, "joinedFilms")
   }
 }

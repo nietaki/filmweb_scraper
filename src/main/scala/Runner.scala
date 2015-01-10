@@ -10,9 +10,7 @@ object Runner {
     //Imdb.getFileLines("res/imdb/ratings.list").foreach(println(_))
     //Imdb.parseRatingsWithIds("res/imdb/ratings.list").foreach(println(_))
 
-    //Matcher.filmwebFilms.take(10).foreach(println(_))
-    //Matcher.imdbFilms.take(10).foreach(println(_))
-
-    Matcher.getMatches(Matcher.exactMatcher)
+    //Matcher.saveMatches()
+    Matcher.getMatches().foreach(println(_))
   }
 }

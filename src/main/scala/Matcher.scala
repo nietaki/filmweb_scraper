@@ -1,9 +1,11 @@
+import com.github.tototoshi.csv.{CSVReader, CSVWriter}
+
 /**
  * Created by nietaki on 10.01.15.
  */
 object Matcher {
   lazy val imdbFilms = Imdb.parseRatingsWithIds("res/imdb/ratings.list").toArray
-  lazy val filmwebFilms = Filmweb.readAllFromCsv("res/filmweb.csv")
+  lazy val filmwebFilms = Filmweb.readAllFromCsv("res/filmweb.csv").toArray
 
   lazy val imdbYearly = imdbFilms.groupBy(_.year)
   lazy val filmwebYearly = imdbFilms.groupBy(_.year)
@@ -17,9 +19,8 @@ object Matcher {
     }
   }
 
-
-  def getMatches(matcher: (String, String) => Boolean) = {
-    filmwebFilms.foreach {ff =>
+  def getMatches(matcher: (String, String) => Boolean): Seq[(Int, Int)] = {
+    filmwebFilms.map {ff =>
       val imdbOfThisYear = imdbYearly.get(ff.year)
       val found = imdbOfThisYear match {
         case None => None//no films in this year
@@ -32,11 +33,27 @@ object Matcher {
           }
         }
       }
-      val msg = found match {
-        case Some(imdbFound) => s"${imdbFound.title} - imdb: ${imdbFound.rating}, filmweb: ${ff.rating}"
-        case None => s"no match found for ${ff.title}"
+      found.map { imdbFilm =>
+        (ff.id, imdbFilm.id)
       }
-      println(msg)
+    }.filter(_.isDefined).map(_.get)
+  }
+
+  def saveMatches() = {
+    val matches = getMatches(exactMatcher)
+    val writer = CSVWriter.open("res/matches.csv")
+    writer.writeAll(matches.map{ _.productIterator.toSeq})
+  }
+
+  def getMatches(): Seq[(FilmwebFilm, ImdbFilm)] = {
+    val reader = CSVReader.open("res/matches.csv")
+    val lines = reader.iterator.map{ seq => seq.map {_.toInt}}
+    val films = lines.map{ line =>
+      val ff = filmwebFilms(line(0))
+      val imdb  = imdbFilms(line(1))
+      assert(ff.year == imdb.year)
+      (ff, imdb)
     }
+    films.toSeq
   }
 }

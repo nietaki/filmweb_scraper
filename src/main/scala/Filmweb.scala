@@ -26,7 +26,7 @@ object Filmweb {
         val rating = filmDiv.select("span.rateBox").first().select("strong").first().ownText().digits
         val voteCount = filmDiv.select("div.box").first().ownText().digits
 
-        FilmwebFilm(title, origTitle, titleUrl, tryParseToInt(year), tryParseToInt(rating), tryParseToInt(voteCount))
+        FilmwebFilm(None, title, origTitle, titleUrl, tryParseToInt(year), tryParseToInt(rating), tryParseToInt(voteCount))
       }
     } catch {
       case _: HttpStatusException => Thread.sleep(1000); scrapeUrl(url);
@@ -41,8 +41,6 @@ object Filmweb {
       case _: Exception => -1
     }
   }
-
-  val lastPageNo = 5000
 
   /**
    * returns pages sorted descending, by vote count (for now
@@ -60,16 +58,23 @@ object Filmweb {
     s"res/$datetime.csv"
   }
 
+  val lastPageNo = 5000
+
   def run() = {
 
     val writer = CSVWriter.open(getCurrentFilename(), append = true)
-
-    (1 to lastPageNo).foreach {pageNo =>
+    var curId = 0
+    (1 to lastPageNo).foreach { pageNo =>
       println()
       println(pageNo)
       println()
       val url = constructUrl(pageNo)
-      val films = scrapeUrl(url)
+      val films = scrapeUrl(url).map { f =>
+        val ret = f.copy(idOption = Some(curId))
+        curId += 1 // dirty, I know
+        ret
+      }
+
       films.foreach(println(_))
       writer.writeAll(films.map(_.row))
     }

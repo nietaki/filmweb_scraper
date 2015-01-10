@@ -3,7 +3,7 @@ import scala.io.{Codec, Source}
 object Imdb {
 
   def isTvSeriesEpisode(line: String): Boolean = {
-    line.contains("{")
+    line.contains("\"")
   }
 
   def isVideoGame(line: String): Boolean = {

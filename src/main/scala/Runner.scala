@@ -13,6 +13,6 @@ object Runner {
     //Matcher.filmwebFilms.take(10).foreach(println(_))
     //Matcher.imdbFilms.take(10).foreach(println(_))
 
-    Matcher.getExactMatches
+    Matcher.getMatches(Matcher.exactMatcher)
   }
 }

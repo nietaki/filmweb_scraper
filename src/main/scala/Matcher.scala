@@ -8,7 +8,17 @@ object Matcher {
   lazy val imdbYearly = imdbFilms.groupBy(_.year)
   lazy val filmwebYearly = imdbFilms.groupBy(_.year)
 
-  def getExactMatches() = {
+
+  def exactMatcher(s1: String, s2: String) = s1 == s2
+
+  // doesn't work too well, will not be used
+  def similarityMatcher(minSimilarity: Double) = { (s1: String, s2: String) => {
+      Levenshtein.heuristicSimilarity2(s1, s2) >= minSimilarity
+    }
+  }
+
+
+  def getMatches(matcher: (String, String) => Boolean) = {
     filmwebFilms.foreach {ff =>
       val imdbOfThisYear = imdbYearly.get(ff.year)
       val found = imdbOfThisYear match {
@@ -16,9 +26,9 @@ object Matcher {
         case Some(arr) => {
           arr.find {imdbFilm =>
             val imdbTitle = Levenshtein.normalizeString(imdbFilm.title)
-            val filmbwebTitle = Levenshtein.normalizeString(ff.title)
-            val filmbwebOrigTitle = Levenshtein.normalizeString(ff.originalTitle)
-            (imdbTitle == filmbwebTitle) || (imdbTitle == filmbwebOrigTitle)
+            val filmwebTitle = Levenshtein.normalizeString(ff.title)
+            val filmwebOriginalTitle = Levenshtein.normalizeString(ff.originalTitle)
+            (matcher(imdbTitle, filmwebTitle) || matcher(imdbTitle, filmwebOriginalTitle))
           }
         }
       }

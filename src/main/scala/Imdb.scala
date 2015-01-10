@@ -56,5 +56,4 @@ object Imdb {
     val filmsWithoutIds = parseRatings(filename)
     filmsWithoutIds.zipWithIndex.map{case (f, idx) => f.copy(idOption = Some(idx))}
   }
-
 }

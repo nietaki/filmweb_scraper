@@ -1,6 +1,6 @@
 import java.text.SimpleDateFormat
 
-import com.github.tototoshi.csv.CSVWriter
+import com.github.tototoshi.csv.{CSVReader, CSVWriter}
 
 import scala.annotation.tailrec
 import scala.collection.JavaConversions._
@@ -8,6 +8,7 @@ import org.jsoup._
 import org.jsoup.nodes._
 import org.jsoup.select.Elements
 import Implicits._
+import Utils._
 
 object Filmweb {
 
@@ -26,19 +27,11 @@ object Filmweb {
         val rating = filmDiv.select("span.rateBox").first().select("strong").first().ownText().digits
         val voteCount = filmDiv.select("div.box").first().ownText().digits
 
-        FilmwebFilm(None, title, origTitle, titleUrl, tryParseToInt(year), tryParseToInt(rating), tryParseToInt(voteCount))
+        FilmwebFilm(None, title, origTitle, titleUrl, myParseInt(year), myParseInt(rating), myParseInt(voteCount))
       }
     } catch {
       case _: HttpStatusException => Thread.sleep(1000); scrapeUrl(url);
       case _: java.net.SocketTimeoutException => Thread.sleep(1000); scrapeUrl(url);
-    }
-  }
-
-  def tryParseToInt(s: String): Int= {
-    try {
-      s.toInt
-    } catch {
-      case _: Exception => -1
     }
   }
 
@@ -60,7 +53,7 @@ object Filmweb {
 
   val lastPageNo = 5000
 
-  def run() = {
+  def scrape() = {
 
     val writer = CSVWriter.open(getCurrentFilename(), append = true)
     var curId = 0
@@ -78,5 +71,16 @@ object Filmweb {
       films.foreach(println(_))
       writer.writeAll(films.map(_.row))
     }
+  }
+
+  def readAllFromCsv(filename: String): Iterator[FilmwebFilm] = {
+    val reader = CSVReader.open(filename)
+    reader.iterator.map { stringSeq =>
+      parseFromFields(stringSeq)
+    }
+  }
+
+  def parseFromFields(ss: Seq[String]): FilmwebFilm = {
+    FilmwebFilm(Some(myParseInt(ss(0))), ss(1), ss(2), ss(3), myParseInt(ss(4)), myParseInt(ss(5)), myParseInt(ss(6)))
   }
 }

@@ -3,7 +3,7 @@
  */
 object Runner {
   def main(args: Array[String]): Unit = {
-    Filmweb.run()
+    Filmweb.scrape()
 
     //Imdb.parseRatings("res/imdb/ratings.list").foreach(println(_))
     //println(Imdb.parseRatings("res/imdb/ratings.list").toList.length)

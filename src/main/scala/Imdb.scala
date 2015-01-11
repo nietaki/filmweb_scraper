@@ -52,8 +52,8 @@ object Imdb {
     optionIt.filterNot(o => o.isEmpty).map(_.get)
   }
 
-  def parseRatingsWithIds(filename: String): Iterator[ImdbFilm] = {
-    val filmsWithoutIds = parseRatings(filename)
+  def parseRatingsWithIds(filename: String, minVoteCount: Int): Iterator[ImdbFilm] = {
+    val filmsWithoutIds = parseRatings(filename).filter(_.voteCount >= 100)
     filmsWithoutIds.zipWithIndex.map{case (f, idx) => f.copy(idOption = Some(idx))}
   }
 }

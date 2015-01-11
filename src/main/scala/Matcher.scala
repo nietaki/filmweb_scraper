@@ -4,7 +4,8 @@ import com.github.tototoshi.csv.{CSVReader, CSVWriter}
  * Created by nietaki on 10.01.15.
  */
 object Matcher {
-  lazy val imdbFilms = Imdb.parseRatingsWithIds("res/imdb/ratings.list").toArray
+
+  lazy val imdbFilms = Imdb.parseRatingsWithIds("res/imdb/ratings.list", 100).toArray
   lazy val filmwebFilms = Filmweb.readAllFromCsv("res/filmweb.csv").toArray
 
   lazy val imdbYearly = imdbFilms.groupBy(_.year)
@@ -25,12 +26,15 @@ object Matcher {
       val found = imdbOfThisYear match {
         case None => None//no films in this year
         case Some(arr) => {
-          arr.find {imdbFilm =>
+          val potentials = arr.filter {imdbFilm =>
             val imdbTitle = Levenshtein.normalizeString(imdbFilm.title)
             val filmwebTitle = Levenshtein.normalizeString(ff.title)
             val filmwebOriginalTitle = Levenshtein.normalizeString(ff.originalTitle)
             (matcher(imdbTitle, filmwebTitle) || matcher(imdbTitle, filmwebOriginalTitle))
           }
+          // with multiple matches, get the one with the most similar rating
+          val potentialsSorted = potentials.sortBy(im => math.abs(im.rating - ff.rating))
+          potentialsSorted.headOption
         }
       }
       found.map { imdbFilm =>

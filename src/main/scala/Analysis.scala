@@ -33,4 +33,23 @@ object Analysis {
       }
     }
   }
+
+  def mostDifferent = {
+    val sorted = Matcher.matches.filter{ pr =>
+      pr._1.voteCount >= 100
+    }.sortBy{ pr =>
+      val fw = pr._1
+      val im = pr._2
+      -math.abs(fw.rating - im.rating)
+    }.take(100)
+
+    sorted.foreach{ pr =>
+      val fw = pr._1
+      val im = pr._2
+      val diff = fw.rating - im.rating
+
+      println(s"$diff: imdb_title: ${im.title} (${im.year}), filmweb_url: ${fw.url}, filmweb rating: ${fw.rating}, imdb rating: ${im.rating}") // TODO url
+    }
+
+  }
 }

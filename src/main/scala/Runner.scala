@@ -14,11 +14,15 @@ object Runner {
     //Matcher.matches.foreach(println(_))
     //Analysis.saveToDatFile(Analysis.getHeatMapData, "heatmap")
 
-    Analysis.saveToCsv(Matcher.imdbFilms.map(_.row), "imdbFilms")
-    Analysis.saveToCsv(Matcher.filmwebFilms.map(_.row), "filmwebFilms")
+    //Analysis.saveToCsv(Matcher.imdbFilms.map(_.row), "imdbFilms")
+    //Analysis.saveToCsv(Matcher.filmwebFilms.map(_.row), "filmwebFilms")
 
-    Analysis.saveToCsv(Matcher.matches.map{case (filmweb, imdb) =>
-      filmweb.row ++ imdb.row
-    }, "joinedFilms")
+    //Analysis.saveToCsv(Matcher.matches.map{case (filmweb, imdb) =>
+    //  filmweb.row ++ imdb.row
+    //}, "joinedFilms")
+
+    Analysis.saveToCsv(Analysis.heatMapData, "heatmap")
+    println(Analysis.heatMapData.map(_.max).max)
+    println(Analysis.heatTrendLine)
   }
 }

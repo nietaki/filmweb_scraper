@@ -18,15 +18,19 @@ object Analysis {
     writer.writeAll(data)
   }
 
-  def getHeatMapData = {
+  /*
+  filmweb is the outer loop, hence y axis
+   */
+  lazy val heatMapData = {
     for (
-      fwScore <- (10 to 100);
-      imdbScore <- (10 to 100)
+      fwScore <- (10 to 100)
     ) yield {
-      val count = Matcher.matches.count { case(filmwebFilm, imdbFilm) =>
-        filmwebFilm.rating == fwScore && imdbFilm.rating == imdbScore
+      (10 to 100).map{imdbScore =>
+        val result = Matcher.matches.count { case(filmwebFilm, imdbFilm) =>
+          filmwebFilm.rating == fwScore && imdbFilm.rating == imdbScore
+        }
+        math.log1p(result)
       }
-      Seq(fwScore, imdbScore, count)
     }
   }
 }

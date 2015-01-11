@@ -50,6 +50,18 @@ object Analysis {
 
       println(s"$diff: imdb_title: ${im.title} (${im.year}), filmweb_url: ${fw.url}, filmweb rating: ${fw.rating}, imdb rating: ${im.rating}") // TODO url
     }
-
   }
+
+  // two rows: years and scores
+  def byYear: Seq[Seq[Int]] = {
+    Matcher.filmwebFilms.toSeq.map(ff => Seq[Int](ff.year, ff.rating)).transpose
+  }
+
+  // two rows, years and averages
+  def averageYearly: Seq[Seq[Int]] =  {
+    Matcher.filmwebFilms.groupBy(_.year).map{ case(year, films) =>
+        val avg = films.map(_.rating).sum / films.length
+        Seq (year, avg)
+    }
+  }.toSeq.sortBy(_.head).transpose
 }
